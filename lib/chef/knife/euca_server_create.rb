@@ -124,6 +124,12 @@ class Chef
         :boolean => true,
         :default => false
 
+      option :euca_user_data,
+         :long => "--user-data USER_DATA_FILE",
+         :description => "The Eucalyptus User Data file to provision the instance with",
+         :proc => Proc.new { |m| Chef::Config[:knife][:euca_user_data] = m },
+         :default => nil
+
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -158,6 +164,14 @@ class Chef
           :key_name => Chef::Config[:knife][:euca_ssh_key_id],
           :availability_zone => Chef::Config[:knife][:availability_zone]
         }
+
+        if Chef::Config[:knife][:euca_user_data]
+           begin
+              server_def.merge!(:user_data => File.read(Chef::Config[:knife][:euca_user_data]))
+           rescue
+              ui.warn("Cannot read #{Chef::Config[:knife][:euca_user_data]}: #{$!.inspect}. Ignoring option.")
+           end
+        end
 
         server = connection.servers.create(server_def)
 

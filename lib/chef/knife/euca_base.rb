@@ -53,6 +53,12 @@ class Chef
             :default => "http://ecc.eucalyptus.com:8773/services/Eucalyptus",
             :proc => Proc.new { |endpoint| Chef::Config[:knife][:euca_api_endpoint] = endpoint }
 
+          option :euca_api_version,
+            :long => "--euca-api-version VERSION",
+            :description => "Your Eucalyptus API version",
+            :default => "http://ecc.eucalyptus.com:8773/services/Eucalyptus",
+            :proc => Proc.new { |version| Chef::Config[:knife][:euca_api_version] = version }
+
           option :region,
             :long => "--region REGION",
             :description => "Your Eucalyptus region",
@@ -67,6 +73,7 @@ class Chef
             :aws_access_key_id => Chef::Config[:knife][:euca_access_key_id],
             :aws_secret_access_key => Chef::Config[:knife][:euca_secret_access_key],
             :endpoint => Chef::Config[:knife][:euca_api_endpoint] || config[:euca_api_endpoint],
+            :version => Chef::Config[:knife][:euca_api_version] || config[:euca_api_version],
             :region => Chef::Config[:knife][:region] || config[:region]
           )
         end
